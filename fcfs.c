@@ -41,8 +41,9 @@ void main() {
         p[i].tat = p[i].ct - p[i].at;
         p[i].wt = p[i].tat - p[i].bt;
     }
-    for (int i=0; i<n; i++) {
-        printf("CT of %d: %d\n", i+1, p[i].ct);
+    printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n", i+1, p[i].at, p[i].bt, p[i].ct, p[i].tat, p[i].wt);
     }
 }
 
