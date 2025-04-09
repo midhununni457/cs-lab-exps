@@ -45,6 +45,50 @@ void main() {
     for (int i = 0; i < n; i++) {
         printf("P%d\t%d\t%d\t%d\t%d\t%d\n", i+1, p[i].at, p[i].bt, p[i].ct, p[i].tat, p[i].wt);
     }
+
+    // Display Gantt chart
+    printf("\nGantt Chart:\n");
+
+    // Print the top border of the Gantt chart
+    printf(" ");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < p[i].bt; j++) {
+            printf("--");
+        }
+        printf(" ");
+    }
+    printf("\n|");
+
+    // Print the process IDs in the Gantt chart
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < p[i].bt; j++) {
+            printf(" ");
+        }
+        printf("P%d", i + 1);
+        for (int j = 0; j < p[i].bt; j++) {
+            printf(" ");
+        }
+        printf("|");
+    }
+    printf("\n ");
+
+    // Print the bottom border of the Gantt chart
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < p[i].bt; j++) {
+            printf("--");
+        }
+        printf(" ");
+    }
+    printf("\n0");
+
+    // Print the completion times below the Gantt chart
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < p[i].bt; j++) {
+            printf("  ");
+        }
+        printf("%d", p[i].ct);
+    }
+    printf("\n");
 }
 
 
