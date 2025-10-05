@@ -1,0 +1,46 @@
+-- DDL_commands.txt
+-- Contains: CREATE DATABASE, ALTER DATABASE, DROP DATABASE, CREATE TABLE, ALTER TABLE, DROP TABLE, CREATE INDEX, DROP INDEX, CREATE SCHEMA, CREATE TEMP TABLE, CREATE VIEW, DROP VIEW
+
+-- CREATE DATABASE
+CREATE DATABASE school;
+
+-- ALTER DATABASE examples
+-- Add new column
+ALTER TABLE students ADD COLUMN email VARCHAR(100);
+
+-- Delete/drop column
+ALTER TABLE students DROP COLUMN email;
+
+-- Modify column (change data type/constraints)
+ALTER TABLE students MODIFY COLUMN first_name VARCHAR(75) NOT NULL;
+
+-- DROP DATABASE
+DROP DATABASE IF EXISTS school;
+
+-- CREATE TABLE
+CREATE TABLE students (
+  student_id INT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL
+);
+
+-- DROP TABLE
+DROP TABLE IF EXISTS students;
+
+-- CREATE TEMPORARY TABLE
+CREATE TEMPORARY TABLE tmp_scores (
+  student_id INT,
+  score INT
+);
+
+-- CREATE INDEX
+CREATE INDEX idx_students_lastname ON students(last_name);
+
+-- DROP INDEX
+DROP INDEX idx_students_lastname ON students;
+
+-- CREATE VIEW
+CREATE VIEW v_active_students AS SELECT student_id, first_name, last_name FROM students WHERE enrolled = TRUE;
+
+-- DROP VIEW
+DROP VIEW IF EXISTS v_active_students;

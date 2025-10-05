@@ -1,0 +1,27 @@
+-- Views_and_Triggers.txt
+-- Contains: CREATE VIEW, DROP VIEW, CREATE TRIGGER
+
+-- CREATE VIEW (example)
+CREATE VIEW v_recent_enrollments AS
+SELECT e.enrollment_id, s.first_name, s.last_name, e.enrolled_on
+FROM enrollments e
+JOIN students s ON e.student_id = s.student_id
+WHERE e.enrolled_on >= DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+
+-- DROP VIEW
+DROP VIEW IF EXISTS v_recent_enrollments;
+
+-- CREATE TRIGGER example: audit insert into students
+DELIMITER $$
+CREATE TRIGGER trg_students_insert
+AFTER INSERT ON students
+FOR EACH ROW
+BEGIN
+    IF NEW.age < 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Age cannot be negative';
+    ELSE
+        INSERT INTO student_audit (student_id, action, action_date)
+        VALUES (NEW.student_id, 'INSERT', NOW());
+    END IF;
+END$$
+DELIMITER ;

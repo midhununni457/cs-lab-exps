@@ -1,0 +1,38 @@
+
+-- Insert single row
+INSERT INTO students (first_name, last_name, dob, email, enrolled)
+VALUES ('Alice', 'Johnson', '2004-05-12', 'alice.johnson@example.com', TRUE);
+
+-- Insert multiple rows
+INSERT INTO students (first_name, last_name, dob, email)
+VALUES
+  ('Bob', 'Smith', '2003-08-21', 'bob.smith@example.com'),
+  ('Carol', 'Lee', '2005-11-02', 'carol.lee@example.com');
+
+-- Select all
+SELECT * FROM students;
+
+-- Select with condition
+SELECT student_id, first_name, last_name FROM students WHERE enrolled = TRUE;
+
+-- Select with ORDER BY and LIMIT
+SELECT * FROM students ORDER BY last_name ASC, first_name ASC LIMIT 10;
+
+-- Update rows
+UPDATE students SET enrolled = FALSE WHERE student_id = 3;
+
+-- Update with join
+UPDATE students s
+JOIN enrollments e ON s.student_id = e.student_id
+SET s.enrolled = FALSE
+WHERE e.class_id = 1;
+
+-- Delete rows
+DELETE FROM students WHERE student_id = 4;
+
+-- Truncate table (fast delete)
+TRUNCATE TABLE enrollments;
+
+-- Replace (insert or overwrite)
+REPLACE INTO students (student_id, first_name, last_name, email)
+VALUES (1, 'Alice', 'Johnson', 'alice.new@example.com');

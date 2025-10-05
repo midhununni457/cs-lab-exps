@@ -1,0 +1,28 @@
+-- Functions_and_Aggregates.txt
+-- Contains: LENGTH, SUBSTR, ROUND, NOW, COUNT, SUM, AVG, MIN, MAX, ORDER BY, GROUP BY, HAVING, EXPLAIN PLAN, SHOW PLAN
+
+-- LENGTH and SUBSTR
+SELECT LENGTH(first_name) AS len FROM students;
+SELECT SUBSTR(first_name, 1, 3) AS prefix FROM students;
+
+-- ROUND
+SELECT ROUND(average_score, 2) FROM class_results;
+
+-- NOW (current timestamp)
+SELECT NOW() AS current_time;
+
+-- Aggregate functions
+SELECT COUNT(*) AS total_students FROM students;
+SELECT SUM(amount) AS total_amount FROM payments;
+SELECT AVG(score) AS avg_score FROM exam_results;
+SELECT MIN(dob) AS earliest FROM students;
+SELECT MAX(dob) AS latest FROM students;
+
+-- ORDER BY example
+SELECT * FROM students ORDER BY last_name ASC, first_name ASC;
+
+-- GROUP BY and HAVING (example)
+SELECT class_id, COUNT(*) AS cnt FROM enrollments GROUP BY class_id HAVING COUNT(*) > 10;
+
+-- EXPLAIN / SHOW PLAN
+EXPLAIN SELECT * FROM students WHERE last_name = 'Smith';

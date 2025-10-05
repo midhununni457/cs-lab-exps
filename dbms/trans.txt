@@ -1,0 +1,25 @@
+-- Transactions_and_Security.txt
+-- Contains: COMMIT, ROLLBACK, SAVEPOINT, GRANT, REVOKE
+
+-- Transactions
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+COMMIT;
+
+-- Rollback example
+START TRANSACTION;
+DELETE FROM some_table WHERE id = 123;
+ROLLBACK; -- undo
+
+-- Savepoint example
+START TRANSACTION;
+UPDATE t SET v = 1 WHERE id = 1;
+SAVEPOINT sp1;
+UPDATE t SET v = 2 WHERE id = 2;
+ROLLBACK TO SAVEPOINT sp1; -- undo steps after sp1
+COMMIT;
+
+-- Security: GRANT and REVOKE
+GRANT SELECT, INSERT ON academy.* TO 'app_user'@'localhost' IDENTIFIED BY 'password';
+REVOKE INSERT ON academy.* FROM 'app_user'@'localhost';

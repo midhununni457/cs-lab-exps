@@ -1,0 +1,17 @@
+-- Backup_and_Planning.txt
+-- Contains: BACKUP DATABASE, RESTORE DATABASE, EXPLAIN PLAN, SHOW PLAN
+
+-- BACKUP / RESTORE: MySQL commonly uses mysqldump for logical backups
+-- Backup (logical) example using command-line (outside SQL):
+-- mysqldump -u root -p academy > academy_backup.sql
+
+-- Restore (logical) example:
+-- mysql -u root -p academy < academy_backup.sql
+
+-- Some storage engines support physical backup tools (e.g., Percona XtraBackup)
+
+-- EXPLAIN PLAN (MySQL uses EXPLAIN)
+EXPLAIN FORMAT=JSON SELECT * FROM enrollments WHERE class_id = 2;
+
+-- SHOW PLAN is vendor-specific; use EXPLAIN in MySQL and tools like EXPLAIN ANALYZE (MySQL 8.0.18+)
+EXPLAIN ANALYZE SELECT * FROM students WHERE last_name = 'Smith';
