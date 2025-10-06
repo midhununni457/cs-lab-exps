@@ -1,0 +1,4 @@
+Files are:
+bankers.c
+mem_alloc.c
+semaphore_pc.c

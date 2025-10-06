@@ -1,0 +1,6 @@
+Files are:
+pass2.c
+intermediate.txt
+optab.txt
+symtab.txt
+length.txt

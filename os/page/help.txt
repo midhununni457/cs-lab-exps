@@ -1,0 +1,4 @@
+Files are:
+fifo.c
+lfu.c
+lru.c
