@@ -1,0 +1,32 @@
+-- procedures_functions.sql
+-- Examples: CREATE PROCEDURE, CREATE FUNCTION, CALL/EXECUTE
+
+-- CREATE PROCEDURE
+CREATE OR REPLACE PROCEDURE proc_greet (p_name IN VARCHAR2)
+AS
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Hello, ' || p_name);
+END proc_greet;
+/
+
+-- Call the procedure
+BEGIN
+  proc_greet('Alice');
+END;
+/
+
+-- CREATE FUNCTION
+CREATE OR REPLACE FUNCTION fn_add (a IN NUMBER, b IN NUMBER) RETURN NUMBER
+AS
+BEGIN
+  RETURN a + b;
+END fn_add;
+/
+-- Use the function
+DECLARE
+  v_sum NUMBER;
+BEGIN
+  v_sum := fn_add(3, 4);
+  DBMS_OUTPUT.PUT_LINE('Sum: ' || v_sum);
+END;
+/

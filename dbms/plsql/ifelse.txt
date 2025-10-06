@@ -1,0 +1,66 @@
+-- control_flow.sql
+-- Examples: IF-THEN, IF-THEN-ELSE, IF-THEN-ELSIF, CASE, WHILE, BEGIN, END
+
+SET SERVEROUTPUT ON;
+
+-- IF-THEN
+DECLARE
+  v_score NUMBER := 85;
+BEGIN
+  IF v_score >= 50 THEN
+    DBMS_OUTPUT.PUT_LINE('Passed');
+  END IF;
+END;
+/
+
+-- IF-THEN-ELSE
+DECLARE
+  v_score NUMBER := 45;
+BEGIN
+  IF v_score >= 50 THEN
+    DBMS_OUTPUT.PUT_LINE('Passed');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Failed');
+  END IF;
+END;
+/
+
+-- IF-THEN-ELSIF
+DECLARE
+  v_score NUMBER := 75;
+BEGIN
+  IF v_score >= 90 THEN
+    DBMS_OUTPUT.PUT_LINE('A');
+  ELSIF v_score >= 75 THEN
+    DBMS_OUTPUT.PUT_LINE('B');
+  ELSIF v_score >= 60 THEN
+    DBMS_OUTPUT.PUT_LINE('C');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('F');
+  END IF;
+END;
+/
+
+-- CASE (searched CASE)
+DECLARE
+  v_grade CHAR := 'B';
+BEGIN
+  CASE v_grade
+    WHEN 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent');
+    WHEN 'B' THEN DBMS_OUTPUT.PUT_LINE('Good');
+    WHEN 'C' THEN DBMS_OUTPUT.PUT_LINE('Average');
+    ELSE DBMS_OUTPUT.PUT_LINE('Poor');
+  END CASE;
+END;
+/
+
+-- WHILE loop
+DECLARE
+  v_counter NUMBER := 1;
+BEGIN
+  WHILE v_counter <= 5 LOOP
+    DBMS_OUTPUT.PUT_LINE('Count: ' || v_counter);
+    v_counter := v_counter + 1;
+  END LOOP;
+END;
+/

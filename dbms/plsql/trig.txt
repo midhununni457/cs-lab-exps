@@ -1,0 +1,21 @@
+-- triggers.sql
+-- Examples: CREATE TRIGGER
+
+-- Simple row-level BEFORE INSERT trigger
+CREATE OR REPLACE TRIGGER trg_students_bi
+BEFORE INSERT ON students
+FOR EACH ROW
+BEGIN
+  :NEW.created_at := NVL(:NEW.created_at, SYSDATE);
+END trg_students_bi;
+/
+
+-- AFTER UPDATE trigger example
+CREATE OR REPLACE TRIGGER trg_students_au
+AFTER UPDATE ON students
+FOR EACH ROW
+BEGIN
+  INSERT INTO students_audit (student_id, changed_on)
+  VALUES (:OLD.student_id, SYSDATE);
+END trg_students_au;
+/
