@@ -30,3 +30,64 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Sum: ' || v_sum);
 END;
 /
+
+
+
+--prime number
+create or replace function isprime(num in NUMBER) return VARCHAR2 is
+begin
+  for i in 2..floor(sqrt(num)) loop
+    if mod(num, i) = 0 then
+      return 'not prime';
+    end if;
+  end loop;
+  return 'prime';
+end;
+/
+
+declare
+  num NUMBER := 13;
+begin
+  dbms_output.put_line('14 is ' || isprime(14));
+end;
+/
+
+
+
+--electricity units
+CREATE OR REPLACE FUNCTION calc_bill(p_units IN NUMBER)
+RETURN FLOAT IS
+BEGIN
+   RETURN p_units*50;
+END;
+/
+
+BEGIN
+   FOR rec IN (SELECT cust_no, units_consumed FROM bill) LOOP
+      UPDATE bill
+      SET amount = calc_bill(rec.units_consumed)
+      WHERE cust_no = rec.cust_no;
+   END LOOP;
+
+   COMMIT;
+END;
+/
+
+
+--sum of digits
+create or replace function sumofdigits(num in NUMBER) return NUMBER is
+  copy_num NUMBER := num;
+  total NUMBER := 0;
+begin
+  while copy_num > 0 loop
+    total := total + mod(copy_num, 10);
+    copy_num := trunc(copy_num/10);
+  end loop;
+  return total;
+end;
+/
+
+begin
+  dbms_output.put_line(sumofdigits(123));
+end;
+/
