@@ -1,7 +1,0 @@
-Files are:
-ifelse.txt
-cur.txt
-proc.txt
-trig.txt
-excp.txt
-pack.txt

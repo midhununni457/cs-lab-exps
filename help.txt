@@ -1,5 +1,0 @@
-Subfolders are:
-os
-ss
-mm
-dbms

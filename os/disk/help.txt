@@ -1,4 +1,0 @@
-Files are:
-fcfs_disk.c
-scan.c
-cscan.c

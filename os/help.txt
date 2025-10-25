@@ -1,6 +1,0 @@
-Subfolders are:
-cpu
-disk
-file
-page
-misc

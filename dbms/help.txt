@@ -1,3 +1,0 @@
-Subfolders are:
-mysql
-plsql

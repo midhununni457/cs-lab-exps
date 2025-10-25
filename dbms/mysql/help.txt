@@ -1,7 +1,0 @@
-Files are:
-ddl.txt
-dml.txt
-func.txt
-trigger.txt
-backup.txt
-trans.txt

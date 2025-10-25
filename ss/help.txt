@@ -1,3 +1,0 @@
-Subfolders are:
-pass1
-pass2

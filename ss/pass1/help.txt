@@ -1,4 +1,0 @@
-Files are:
-pass1.c
-input.txt
-optab.txt
