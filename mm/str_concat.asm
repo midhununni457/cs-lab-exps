@@ -1,0 +1,52 @@
+DATA SEGMENT
+    STR1 DB 'HELLO$'
+    STR2 DB 'WORLD$'
+    RES DB 50 DUP('$')
+
+    MSG DB 10,13 'Concatenated string: $'
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE, DS:DATA
+
+START:
+    MOV AX, DATA
+    MOV DS, AX
+
+    LEA SI, STR1
+    LEA DI, RES
+
+COPY_STR1:
+    LODSB
+    CMP AL, '$'
+    JE COPY_STR2
+    STOSB
+    JMP COPY_STR1
+
+COPY_STR2:
+    LEA SI, STR2
+
+COPY_STR2_LOOP:
+    LODSB
+    CMP AL, '$'
+    JE DONE
+    STOSB
+    JMP COPY_STR2_LOOP
+
+DONE:
+    MOV AL, '$'
+    STOSB
+
+    LEA DX, MSG
+    MOV AH, 09H
+    INT 21H
+
+    LEA DX, RES
+    MOV AH, 09H
+    INT 21H
+
+    MOV AH, 4CH
+    INT 21H
+
+CODE ENDS
+END START
