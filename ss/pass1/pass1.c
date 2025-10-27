@@ -55,7 +55,8 @@ int main() {
                 if (operand[0] == 'C') {
                     locctr += strlen(operand) - 3;
                 } else if (operand[0] == 'X') {
-                    locctr += (strlen(operand) - 3) / 2;
+                    int num_hex_digits = strlen(operand) - 3; 
+                    locctr += (num_hex_digits + 1) / 2;
                 }
             }
         }
