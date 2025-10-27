@@ -1,0 +1,8 @@
+COPY    MACRO   &FROM,&TO
+-       MOVER   &FROM
+-       MOVEM   &TO
+-       MEND    -
+-       START   1000
+-       COPY    AREG,BREG
+-       COPY    DATA1,DATA2
+-       END     -
