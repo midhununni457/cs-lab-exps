@@ -8,11 +8,10 @@ char bit[50];
 void convert(char h[12]);
 
 int main() {
-    char add[10], length[10], input[10], pn[10];
+    char line[200], recordType[5], pn[10];
     int start, address, opcode, addr, actualadd, tlen;
     char relocbit;
-    int len, i, orig_start, offset;
-
+    int orig_start, offset;
     FILE *fp1, *fp2;
 
     printf("Enter the actual starting address: ");
@@ -35,24 +34,53 @@ int main() {
     fprintf(fp2, " ADDRESS\tCONTENT\n");
     fprintf(fp2, " ----------------------------\n");
 
-    while (fscanf(fp1, "%s", input) != EOF) {
-        if (strcmp(input, "H") == 0) {
-            fscanf(fp1, "%s %x %s", pn, &orig_start, length);
+    while (fgets(line, sizeof(line), fp1)) {
+        // Remove trailing newline
+        line[strcspn(line, "\n")] = '\0';
+
+        // Split first token (record type)
+        char *token = strtok(line, "^");
+        if (!token) continue;
+        strcpy(recordType, token);
+
+        if (strcmp(recordType, "H") == 0) {
+            // Header record: H^TEST^001000^00107A
+            char progname[10], startAddrStr[10], lengthStr[10];
+            token = strtok(NULL, "^");
+            strcpy(progname, token);
+            token = strtok(NULL, "^");
+            strcpy(startAddrStr, token);
+            token = strtok(NULL, "^");
+            strcpy(lengthStr, token);
+
+            sscanf(startAddrStr, "%x", &orig_start);
         } 
-        else if (strcmp(input, "T") == 0) {
-            fscanf(fp1, "%x %x %s", &address, &tlen, bitmask);
+        else if (strcmp(recordType, "T") == 0) {
+            // Text record: T^001000^1E^F1^141003^281030...
+            char addressStr[10], lenStr[10];
+
+            token = strtok(NULL, "^");
+            strcpy(addressStr, token);
+            sscanf(addressStr, "%x", &address);
+
+            token = strtok(NULL, "^");
+            strcpy(lenStr, token);
+            sscanf(lenStr, "%x", &tlen);
 
             offset = start - orig_start;
             address += offset;
 
+            // Next token is bitmask (e.g., "F1")
+            token = strtok(NULL, "^");
+            strcpy(bitmask, token);
             convert(bitmask);
 
-            len = strlen(bit);
-            if (len > 10) len = 10;
+            int i = 0;
+            token = strtok(NULL, "^");
 
-            for (i = 0; i < len; i++) {
-                if (fscanf(fp1, "%x %x", &opcode, &addr) != 2)
-                    break;
+            while (token && i < strlen(bit)) {
+                // Combine opcode and address (e.g., "141003")
+                sscanf(token, "%2x%4x", &opcode, &addr);
 
                 relocbit = bit[i];
                 if (relocbit == '0')
@@ -62,9 +90,11 @@ int main() {
 
                 fprintf(fp2, "%04X\t\t%02X%04X\n", address, opcode, actualadd);
                 address += 3;
+                token = strtok(NULL, "^");
+                i++;
             }
         } 
-        else if (strcmp(input, "E") == 0) {
+        else if (strcmp(recordType, "E") == 0) {
             break;
         }
     }
