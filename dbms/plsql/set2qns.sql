@@ -1,21 +1,23 @@
 -- Display each center with total number of students allotted (using Cursor)
-BEGIN
-  DBMS_OUTPUT.PUT_LINE('Center ID | Center Name | Total Students');
-  FOR rec IN (
+DECLARE
+  CURSOR c_center IS
     SELECT c.center_id, c.center_name, COUNT(a.allot_id) AS total_students
     FROM CENTER c
     LEFT JOIN ALLOTMENT a ON c.center_id = a.center_id
-    GROUP BY c.center_id, c.center_name
-  )
+    GROUP BY c.center_id, c.center_name;
+  rec c_center%ROWTYPE;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Center ID | Center Name | Total Students');
+  OPEN c_center;
   LOOP
-    DBMS_OUTPUT.PUT_LINE(
-      rec.center_id || ' | ' ||
-      rec.center_name || ' | ' ||
-      rec.total_students
-    );
+    FETCH c_center INTO rec;
+    EXIT WHEN c_center%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE(rec.center_id || ' | ' || rec.center_name || ' | ' || rec.total_students);
   END LOOP;
+  CLOSE c_center;
 END;
 /
+
 
 
 -- Trigger to prevent allotting a student if the center is already full
