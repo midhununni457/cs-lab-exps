@@ -42,15 +42,11 @@ int main() {
     while (base <= TOTAL_PACKETS) {
 
         // Send packets inside window
-        while (next < base + WINDOW_SIZE &&
-               next <= TOTAL_PACKETS) {
-
+        while (next < base + WINDOW_SIZE && next <= TOTAL_PACKETS) {
+            memset(packet, 0, sizeof(packet));
             sprintf(packet, "%d", next);
-
             printf("Sending Packet %d\n", next);
-
-            send(sockfd, packet, strlen(packet), 0);
-
+            send(sockfd, packet, sizeof(packet), 0);
             next++;
         }
 

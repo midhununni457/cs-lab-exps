@@ -35,27 +35,27 @@ int main() {
 
     printf("Client connected\n\n");
 
+    int expected = 1;
+
     while (1) {
-
         memset(buffer, 0, sizeof(buffer));
-
         int n = read(newsock, buffer, sizeof(buffer));
 
-        if (n <= 0)
-            break;
+        if (n <= 0) break;
 
-        printf("Received: %s\n", buffer);
+        int pkt = atoi(buffer);
+        printf("Received Packet %d\n", pkt);
 
-        // Random ACK simulation
-        if (rand() % 100 < ack_prob) {
-
-            send(newsock, buffer, strlen(buffer), 0);
-
-            printf("ACK sent for %s\n\n", buffer);
-
+        if (pkt == expected) {
+            if (rand() % 100 < ack_prob) {
+                send(newsock, buffer, strlen(buffer), 0);
+                printf("ACK sent for %d\n\n", pkt);
+                expected++;
+            } else {
+                printf("ACK lost for %d\n\n", pkt);
+            }
         } else {
-
-            printf("ACK lost for %s\n\n", buffer);
+            printf("Out of order packet discarded\n\n");
         }
     }
 
