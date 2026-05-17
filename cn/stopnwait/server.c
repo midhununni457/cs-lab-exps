@@ -21,13 +21,13 @@ int main() {
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons(8080);
 
-    bind(sockfd, (struck sockaddr *)&server, sizeof(server));
+    bind(sockfd, (struct sockaddr *)&server, sizeof(server));
 
     listen(sockfd, 3);
 
     printf("Waiting for connection...\n");
 
-    newsock = accept(sockfd, (struck sockaddr *)&client, &len);
+    newsock = accept(sockfd, (struct sockaddr *)&client, &len);
 
     printf("Client connected.\n");
 
@@ -41,7 +41,7 @@ int main() {
         printf("Received packet: %s\n", buffer);
 
         if (rand() % 100 < ack_prob) {
-            send(newsock, "ACK", 3, 0);
+            send(newsock, "ACK", 4, 0);
             printf("ACK sent\n");
         } else {
             printf("ACK lost\n");
