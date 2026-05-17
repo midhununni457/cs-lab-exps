@@ -14,7 +14,6 @@ int main() {
     socklen_t len = sizeof(client);
 
     char buffer[1024];
-    char ack[100];
 
     int ack_prob = 70;
 
@@ -50,9 +49,7 @@ int main() {
         // Random ACK simulation
         if (rand() % 100 < ack_prob) {
 
-            sprintf(ack, "%s", buffer);
-
-            send(newsock, ack, strlen(ack), 0);
+            send(newsock, buffer, sizeof(buffer), 0);
 
             printf("ACK sent for Packet %s\n\n", buffer);
 

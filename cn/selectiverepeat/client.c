@@ -49,12 +49,10 @@ int main() {
              i++) {
 
             if (acked[i] == 0) {
-
+                memset(packet, 0, sizeof(packet));
                 sprintf(packet, "%d", i);
-
                 printf("Sending Packet %d\n", i);
-
-                send(sockfd, packet, strlen(packet), 0);
+                send(sockfd, packet, sizeof(packet), 0);
             }
         }
 
