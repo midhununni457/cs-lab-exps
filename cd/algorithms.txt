@@ -76,8 +76,8 @@ File: nfa_to_dfa.c
 Step 1: Start.
 Step 2: Read the number of NFA states 'n'.
 Step 3: Read the number of input symbols 'num_sym'.
-Step 4: Read the NFA transition table trans[state][symbol][next_state] for all states 
-        and all input symbols.
+Step 4: For each input symbol s from 0 to num_sym - 1:
+        Read the n x n transition matrix trans[i][s][k] for all states i and next states k.
 Step 5: Represent each subset of NFA states using an integer bitmask, where bit i is 
         set to 1 if state qi is present in the subset.
 Step 6: Initialize a FIFO queue to store DFA state subsets, and a 'visited' array with all 0s.
@@ -107,7 +107,9 @@ File: dfa_minimize.c
 Step 1: Start.
 Step 2: Read the total number of states 'n'.
 Step 3: Read the total number of input symbols 'num_sym'.
-Step 4: Read the DFA transition table trans[i][k] for each state i and each input symbol k.
+Step 4: For each input symbol s from 0 to num_sym - 1:
+        Read the n x n transition matrix, where entry (i, k) is 1 if state i 
+        transitions to state k on symbol s (setting trans[i][s] = k).
 Step 5: Read the final state status for each state into array 'final' 
         (1 for final state, 0 for non-final state).
 Step 6: For each state i from 0 to n - 2:

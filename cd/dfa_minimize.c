@@ -4,7 +4,7 @@
 #define MAX_SYMBOLS 10
 
 int main() {
-    int n, num_sym, i, j, k;
+    int n, num_sym, i, j, k, s;
     int trans[MAX_STATES][MAX_SYMBOLS];
     int final[MAX_STATES];
 
@@ -14,11 +14,16 @@ int main() {
     printf("Enter number of input symbols: ");
     scanf("%d", &num_sym);
 
-    printf("Enter transition table:\n");
-    for(i = 0; i < n; i++) {
-        printf("State %d transitions for %d symbols: ", i, num_sym);
-        for(k = 0; k < num_sym; k++)
-            scanf("%d", &trans[i][k]);
+    for(s = 0; s < num_sym; s++) {
+        printf("Enter transition matrix for input symbol %d:\n", s);
+        for(i = 0; i < n; i++) {
+            for(k = 0; k < n; k++) {
+                int val;
+                scanf("%d", &val);
+                if(val == 1)
+                    trans[i][s] = k;
+            }
+        }
     }
 
     printf("Enter final states (0 for non-final, 1 for final):\n");
@@ -53,11 +58,16 @@ int main() {
 Sample Input:
 Enter number of states: 4
 Enter number of input symbols: 2
-Enter transition table:
-State 0 transitions for 2 symbols: 1 2
-State 1 transitions for 2 symbols: 1 2
-State 2 transitions for 2 symbols: 3 3
-State 3 transitions for 2 symbols: 3 3
+Enter transition matrix for input symbol 0:
+0 1 0 0
+0 1 0 0
+0 0 0 1
+0 0 0 1
+Enter transition matrix for input symbol 1:
+0 0 1 0
+0 0 1 0
+0 0 0 1
+0 0 0 1
 Enter final states (0 for non-final, 1 for final):
 0 0 1 1
 

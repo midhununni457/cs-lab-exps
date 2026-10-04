@@ -11,7 +11,7 @@ int queue[MAX_SUBSETS];
 int front = 0, rear = 0;
 
 int main() {
-    int i, j, k;
+    int i, j, k, s;
 
     printf("Enter number of states: ");
     scanf("%d", &n);
@@ -19,13 +19,11 @@ int main() {
     printf("Enter number of input symbols: ");
     scanf("%d", &num_sym);
 
-    printf("Enter transition table:\n");
-    for(i = 0; i < n; i++) {
-        for(j = 0; j < num_sym; j++) {
-            printf("State %d, Input %d:\n", i, j);
-            for(k = 0; k < n; k++)
-                scanf("%d", &trans[i][j][k]);
-        }
+    for (s = 0; s < num_sym; s++) {
+        printf("Enter transition matrix for input symbol %d:\n", s);
+        for (i = 0; i < n; i++)
+            for (k = 0; k < n; k++)
+                scanf("%d", &trans[i][s][k]);
     }
 
     queue[rear++] = 1;      // Start state = {q0} (bit 0 set)
@@ -66,18 +64,13 @@ int main() {
 Sample Input:
 Enter number of states: 3
 Enter number of input symbols: 2
-Enter transition table:
-State 0, Input 0:
+Enter transition matrix for input symbol 0:
 0 1 0
-State 0, Input 1:
+0 1 0
+0 0 0
+Enter transition matrix for input symbol 1:
 0 0 1
-State 1, Input 0:
-0 1 0
-State 1, Input 1:
 0 0 0
-State 2, Input 0:
-0 0 0
-State 2, Input 1:
 0 0 1
 
 Expected Output:
@@ -92,4 +85,8 @@ Input 1 -> 0
 Subset 4
 Input 0 -> 0
 Input 1 -> 4
+
+Subset 0
+Input 0 -> 0
+Input 1 -> 0
 */
