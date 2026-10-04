@@ -6,7 +6,7 @@
 %%
 
 [a-zA-Z]+   {
-    if (strstr(yytext, "Midh") == NULL)
+    if (strstr(yytext, "abcd") == NULL)
         printf("Accepted: %s\n", yytext);
     else
         printf("Rejected: %s\n", yytext);
@@ -23,3 +23,18 @@ int main() {
     yylex();
     return 0;
 }
+
+/*
+Sample Input (for the final executed file / output of gcc):
+apple
+abcdef
+hello
+abcd
+
+Expected Output:
+Accepted: apple
+Rejected: abcdef
+Accepted: hello
+Rejected: abcd
+*/
+

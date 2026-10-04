@@ -29,3 +29,17 @@ int main() {
         printf("\n");
     }
 }
+
+/*
+Sample Input:
+States: 3
+Enter epsilon transition matrix:
+0 1 0
+0 0 1
+0 0 0
+
+Expected Output:
+E-Closure(0): 0 1 2 
+E-Closure(1): 1 2 
+E-Closure(2): 2 
+*/

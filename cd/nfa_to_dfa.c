@@ -55,3 +55,34 @@ int main() {
 
     return 0;
 }
+
+/*
+Sample Input:
+Enter number of states: 3
+Enter transition table:
+State 0, Input 0:
+0 1 0
+State 0, Input 1:
+0 0 1
+State 1, Input 0:
+0 1 0
+State 1, Input 1:
+0 0 0
+State 2, Input 0:
+0 0 0
+State 2, Input 1:
+0 0 1
+
+Expected Output:
+Subset 1
+Input 0 -> 2
+Input 1 -> 4
+
+Subset 2
+Input 0 -> 2
+Input 1 -> 0
+
+Subset 4
+Input 0 -> 0
+Input 1 -> 4
+*/

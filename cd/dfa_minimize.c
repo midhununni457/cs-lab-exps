@@ -33,3 +33,20 @@ int main() {
 
     return 0;
 }
+
+/*
+Sample Input:
+Enter number of states: 4
+Enter transition table (for 0 and 1):
+1 2
+1 2
+3 3
+3 3
+Enter final states (0 for non-final, 1 for final):
+0 0 1 1
+
+Expected Output:
+Equivalent states are:
+q0 and q1
+q2 and q3
+*/

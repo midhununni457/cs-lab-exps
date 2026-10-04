@@ -78,3 +78,18 @@ int main() {
     yyparse();
     return 0;
 }
+
+/*
+Note: This sample input is for the final executed file (output of gcc after compiling y.tab.c and lex.yy.c).
+
+Sample Input:
+2+3*4
+
+Expected Output:
++
+  2
+  *
+    3
+    4
+*/
+

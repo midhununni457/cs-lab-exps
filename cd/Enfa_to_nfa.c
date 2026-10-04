@@ -44,3 +44,22 @@ int main() {
         printf("\n");
     }
 }
+
+/*
+Sample Input:
+States: 3
+Epsilon transition matrix:
+0 1 0
+0 0 1
+0 0 0
+Transition matrix (one symbol):
+0 1 0
+0 0 0
+0 0 0
+
+Expected Output:
+NFA Transition Matrix:
+0 1 0 
+0 0 0 
+0 0 0 
+*/

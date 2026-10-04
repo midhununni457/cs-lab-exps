@@ -182,10 +182,10 @@ Step 2: Declarations Section (%{ ... %}):
 Step 3: Rules Section (%% ... %%):
         Define token matching rules and actions:
         a. Pattern [a-zA-Z]+ (one or more alphabetic characters):
-           i.   Check if target substring "Midh" is present in yytext using strstr(yytext, "Midh").
-           ii.  If strstr returns NULL (substring "Midh" is absent):
+           i.   Check if target substring "abcd" is present in yytext using strstr(yytext, "abcd").
+           ii.  If strstr returns NULL (substring "abcd" is absent):
                 Print "Accepted: yytext".
-           iii. Else (substring "Midh" is present):
+           iii. Else (substring "abcd" is present):
                 Print "Rejected: yytext".
         b. Pattern \n:
            Ignore newline characters.

@@ -45,3 +45,18 @@ int main() {
     yyparse();
     return 0;
 }
+
+/*
+Note: This sample input is for the final executed file (output of gcc after compiling y.tab.c and lex.yy.c).
+
+Sample Input 1:
+for(i=0;i<10;i++)
+Expected Output:
+Valid FOR statement
+
+Sample Input 2:
+for(i=0;i<10)
+Expected Output:
+Invalid FOR statement
+*/
+

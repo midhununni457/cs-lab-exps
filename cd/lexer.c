@@ -63,8 +63,31 @@ int main() {
     return 0;
 }
 
-// create file input.txt and paste following contents in it
-// int main() {
-//   int x = 10;
-//   printf(x);
-// }
+/*
+Sample Input:
+Create a file named "input.txt" in the same directory with contents:
+
+int main() {
+    int x = 10;
+    printf(x);
+}
+
+Expected Output:
+Keyword: int
+Keyword: main
+Symbol: (
+Symbol: )
+Symbol: {
+Keyword: int
+Identifier: x
+Operator: =
+Number: 10
+Symbol: ;
+Keyword: printf
+Symbol: (
+Identifier: x
+Symbol: )
+Symbol: ;
+Symbol: }
+*/
+

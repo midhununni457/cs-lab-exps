@@ -32,3 +32,14 @@ int main() {
     yyparse();
     return 0;
 }
+
+/*
+Note: This sample input is for the final executed file (output of gcc after compiling y.tab.c and lex.yy.c).
+
+Sample Input:
+(10+5)*2
+
+Expected Output:
+Result: 30
+*/
+
