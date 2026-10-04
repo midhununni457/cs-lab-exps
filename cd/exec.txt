@@ -1,0 +1,68 @@
+================================================================================
+COMPILER DESIGN LAB - GENERAL EXECUTION GUIDE & TIPS
+================================================================================
+
+All programs in this lab fall into one of three categories:
+  1. Combined Lex & Yacc programs (.l and .y files)
+  2. Standalone Lex programs (.l file only)
+  3. Pure C programs (.c file only)
+
+--------------------------------------------------------------------------------
+1. COMBINED LEX & YACC PROGRAMS (.l + .y)
+--------------------------------------------------------------------------------
+Workflow:
+    yacc -d <prog>.y
+    lex <prog>.l
+    gcc y.tab.c lex.yy.c -o <prog>
+    ./<prog>
+
+Key Tips:
+  - Always run 'yacc -d' first: The '-d' flag generates 'y.tab.h' (which defines 
+    token constants). The Lex scanner file (#include "y.tab.h") requires this 
+    header to compile properly.
+  - Using Bison: If 'yacc' is not installed, use:
+        bison -d -y <prog>.y
+    (The '-y' flag ensures output filenames match standard y.tab.c and y.tab.h).
+  - Using Flex: If 'lex' is not installed, use:
+        flex <prog>.l
+  - Math Library: If your Yacc parser uses math functions (e.g. pow, sqrt), 
+    append '-lm' to the gcc command:
+        gcc y.tab.c lex.yy.c -o <prog> -lm
+  - Running on Windows:
+        .\<prog>.exe
+
+--------------------------------------------------------------------------------
+2. STANDALONE LEX PROGRAMS (.l only)
+--------------------------------------------------------------------------------
+Workflow:
+    lex <prog>.l
+    gcc lex.yy.c -o <prog>
+    ./<prog>
+
+Key Tips:
+  - Using Flex: If using flex, run:
+        flex <prog>.l
+  - If 'yywrap()' is not defined in your .l file, link the flex/lex library:
+        gcc lex.yy.c -o <prog> -lfl      (for Flex on Linux)
+        gcc lex.yy.c -o <prog> -ll       (for Lex)
+    (If 'int yywrap() { return 1; }' is already present in your code, no extra 
+    library flag is required).
+  - Terminating Input: When typing multi-line inputs interactively in terminal:
+      * Linux / macOS: Press Ctrl + D
+      * Windows:       Press Ctrl + Z then hit Enter
+
+--------------------------------------------------------------------------------
+3. PURE C PROGRAMS (.c only)
+--------------------------------------------------------------------------------
+Workflow:
+    gcc <prog>.c -o <prog>
+    ./<prog>
+
+Key Tips:
+  - External Files: Some C programs (like custom lexical analyzers) read code from 
+    an external file (such as 'input.txt'). Ensure the input file exists in the 
+    same working directory before executing.
+  - Math Library: If using <math.h>, link with '-lm':
+        gcc <prog>.c -o <prog> -lm
+
+================================================================================

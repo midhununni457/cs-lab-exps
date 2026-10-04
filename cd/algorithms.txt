@@ -1,0 +1,387 @@
+================================================================================
+COMPILER DESIGN LAB - ALGORITHMS
+================================================================================
+
+--------------------------------------------------------------------------------
+CYCLE I
+--------------------------------------------------------------------------------
+
+1. FIND EPSILON-CLOSURE OF ALL STATES OF ANY GIVEN NFA WITH EPSILON TRANSITIONS
+File: Eclosure_nfa.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read the total number of states 'n'.
+Step 3: Read the n x n epsilon transition matrix 'e', where e[i][j] = 1 indicates 
+        an epsilon transition from state i to state j, and 0 otherwise.
+Step 4: For each state i from 0 to n - 1:
+        a. Initialize a visited array 'vis' of size n with all 0s.
+        b. Print "E-Closure(i): ".
+        c. Call Procedure DFS(i).
+        d. Print a newline.
+Step 5: Stop.
+
+--- Procedure DFS(s) ---
+(Finds all states reachable from state s via epsilon transitions)
+Input: State index 's'
+Step 1: Mark state s as visited: vis[s] = 1.
+Step 2: Print state s.
+Step 3: For each state j from 0 to n - 1:
+        If there is an epsilon transition from s to j (e[s][j] == 1) and state j 
+        is not yet visited (vis[j] == 0):
+            Recursively call Procedure DFS(j).
+Step 4: Return.
+
+
+--------------------------------------------------------------------------------
+2. CONVERT NFA WITH EPSILON TRANSITIONS TO NFA WITHOUT EPSILON TRANSITIONS
+File: Enfa_to_nfa.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read the total number of states 'n'.
+Step 3: Read the n x n epsilon transition matrix 'e'.
+Step 4: Read the n x n transition matrix 't' for the given input symbol.
+Step 5: For each state i from 0 to n - 1:
+        a. Initialize visited array 'vis' of size n with all 0s.
+        b. Call Procedure CLOSURE(i, vis) to find all states reachable from state i 
+           via epsilon transitions.
+        c. For each state j that belongs to epsilon-closure(i) (vis[j] == 1):
+           For each state k from 0 to n - 1:
+             If there is a transition from j to k on the input symbol (t[j][k] == 1):
+                 Set transition c[i][k] = 1 in the new NFA.
+Step 6: Display the resulting transition matrix 'c' of the NFA without epsilon transitions.
+Step 7: Stop.
+
+--- Procedure CLOSURE(s, vis) ---
+(Computes the epsilon closure of state s and stores reachable states in array vis)
+Input: State index 's', array 'vis'
+Step 1: Mark state s as visited: vis[s] = 1.
+Step 2: For each state j from 0 to n - 1:
+        If there is an epsilon transition from s to j (e[s][j] == 1) and state j 
+        is not yet visited (vis[j] == 0):
+            Recursively call Procedure CLOSURE(j, vis).
+Step 3: Return.
+
+
+--------------------------------------------------------------------------------
+3. CONVERT NFA TO DFA (SUBSET CONSTRUCTION)
+File: nfa_to_dfa.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read the number of NFA states 'n'.
+Step 3: Read the NFA transition table trans[state][input][next_state] for all states 
+        and input symbols 0 and 1.
+Step 4: Represent each subset of NFA states using an integer bitmask, where bit i is 
+        set to 1 if state qi is present in the subset.
+Step 5: Initialize a FIFO queue to store DFA state subsets, and a 'visited' array of 
+        size 100 with all 0s.
+Step 6: Enqueue the initial DFA state {q0} represented by bitmask 1 (1 << 0):
+        queue[rear++] = 1.
+Step 7: While the queue is not empty (front < rear):
+        a. Dequeue current subset: current = queue[front++].
+        b. If visited[current] == 1, continue to next iteration.
+        c. Mark visited[current] = 1.
+        d. Print current subset identifier.
+        e. For each input symbol j (0 and 1):
+           i.   Initialize next subset bitmask: next = 0.
+           ii.  For each state i in current subset (if current has bit i set):
+                For each target state k from 0 to n - 1:
+                  If trans[i][j][k] == 1, add state k to next subset (next |= (1 << k)).
+           iii. Print transition: current on input j -> next.
+           iv.  If state 'next' has not been visited (visited[next] == 0):
+                Enqueue 'next' into the queue (queue[rear++] = next).
+Step 8: Stop.
+
+
+--------------------------------------------------------------------------------
+4. MINIMIZE ANY GIVEN DFA
+File: dfa_minimize.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read the total number of states 'n'.
+Step 3: Read the DFA transition table trans[i][0] and trans[i][1] for each state i 
+        on input symbols 0 and 1.
+Step 4: Read the final state status for each state into array 'final' 
+        (1 for final state, 0 for non-final state).
+Step 5: For each state i from 0 to n - 2:
+        For each state j from i + 1 to n - 1:
+          Check if state i and state j are 1-equivalent:
+          a. Check if both states have the same acceptance status: 
+             final[i] == final[j].
+          b. Check if their transitions on input 0 lead to states with the same 
+             acceptance status: final[trans[i][0]] == final[trans[j][0]].
+          c. Check if their transitions on input 1 lead to states with the same 
+             acceptance status: final[trans[i][1]] == final[trans[j][1]].
+          d. If all three conditions are satisfied:
+             Print states qi and qj as equivalent states.
+Step 6: Combine equivalent states into unified states to produce the minimized DFA.
+Step 7: Stop.
+
+
+--------------------------------------------------------------------------------
+CYCLE II
+--------------------------------------------------------------------------------
+
+5. DESIGN AND IMPLEMENT A LEXICAL ANALYZER IN C (IGNORING SPACES, TABS, NEWLINES)
+File: lexer.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Initialize a list of standard language keywords: 
+        {"int", "float", "char", "if", "else", "while", "for", "return", 
+         "void", "main", "printf", "scanf"}.
+Step 3: Open the source code file ("input.txt") in read mode.
+        If file pointer is NULL, display "Cannot open input.txt" and terminate.
+Step 4: Read characters from the file one by one using ch = fgetc(fp) until EOF:
+        a. If ch is a whitespace (' '), tab ('\t'), or newline ('\n'):
+           Ignore and continue to the next character (filters redundant spaces).
+        b. If ch is an alphabet (isalpha(ch)):
+           i.   Initialize buffer index i = 0.
+           ii.  While the next character is alphanumeric (isalnum(ch)):
+                Append ch to buffer buf[i++] and read next character: ch = fgetc(fp).
+           iii. Null-terminate buffer: buf[i] = '\0'.
+           iv.  Push the extra non-alphanumeric character back to file stream 
+                using ungetc(ch, fp).
+           v.   Call Function isKeyword(buf):
+                - If true: print "Keyword: buf".
+                - If false: print "Identifier: buf".
+        c. Else if ch is a digit (isdigit(ch)):
+           i.   Initialize buffer index i = 0.
+           ii.  While the next character is a digit (isdigit(ch)):
+                Append ch to buffer buf[i++] and read next character: ch = fgetc(fp).
+           iii. Null-terminate buffer: buf[i] = '\0'.
+           iv.  Push the extra non-digit character back using ungetc(ch, fp).
+           v.   Print "Number: buf".
+        d. Else if ch is an arithmetic or relational operator (+, -, *, /, =, <, >):
+           Print "Operator: ch".
+        e. Else if ch is a punctuation symbol or delimiter ((, ), {, }, ;, ,):
+           Print "Symbol: ch".
+Step 5: Close the file stream using fclose(fp).
+Step 6: Stop.
+
+--- Function isKeyword(str) ---
+Input: String 'str'
+Output: Returns 1 if 'str' matches any keyword in the keyword list; otherwise returns 0.
+Step 1: For each keyword kw[i] in the keyword list:
+        If strcmp(str, kw[i]) == 0:
+            Return 1.
+Step 2: Return 0.
+
+
+--------------------------------------------------------------------------------
+6. LEX PROGRAM TO RECOGNIZE STRINGS NOT CONTAINING FIRST 4 CHARACTERS OF NAME
+File: substr_lex.l
+
+--- Main Algorithm ---
+Step 1: Start Lex specification.
+Step 2: Declarations Section (%{ ... %}):
+        Include header files <stdio.h> and <string.h>.
+Step 3: Rules Section (%% ... %%):
+        Define token matching rules and actions:
+        a. Pattern [a-zA-Z]+ (one or more alphabetic characters):
+           i.   Check if target substring "Midh" is present in yytext using strstr(yytext, "Midh").
+           ii.  If strstr returns NULL (substring "Midh" is absent):
+                Print "Accepted: yytext".
+           iii. Else (substring "Midh" is present):
+                Print "Rejected: yytext".
+        b. Pattern \n:
+           Ignore newline characters.
+Step 4: User Subroutines Section:
+        a. Implement yywrap() returning 1 to indicate end of input.
+        b. In main():
+           i.   Print prompt: "Enter strings (Ctrl+Z to stop):".
+           ii.  Invoke the Lex scanner yylex().
+           iii. Return 0.
+Step 5: Compile with flex (flex substr_lex.l), compile generated lex.yy.c with gcc, 
+        and run the executable.
+Step 6: Stop.
+
+
+--------------------------------------------------------------------------------
+7. YACC PROGRAM TO RECOGNIZE VALID VARIABLE (LETTER FOLLOWED BY LETTERS/DIGITS)
+Folder: valid_var/ (valid_var.l, valid_var.y)
+
+--- Lexical Analyzer Algorithm (valid_var.l) ---
+Step 1: Start Lex specification.
+Step 2: Include "y.tab.h" to access token definitions generated by YACC.
+Step 3: Rules:
+        a. [a-zA-Z]  -> Return token LETTER.
+        b. [0-9]     -> Return token DIGIT.
+        c. \n        -> Return newline token '\n'.
+        d. .         -> Return the character yytext[0] as its own ASCII token.
+Step 4: Define yywrap() returning 1.
+
+--- Parser Algorithm (valid_var.y) ---
+Step 1: Start YACC specification.
+Step 2: Declare tokens: LETTER, DIGIT.
+Step 3: Define Context-Free Grammar (CFG) rules:
+        Rule 1: stmt -> var '\n'
+                Action: Print "Valid variable\n" and return 0 (success).
+        Rule 2: var  -> LETTER rest
+                (A valid variable must begin with a letter)
+        Rule 3: rest -> LETTER rest
+                     |  DIGIT rest
+                     |  /* epsilon / empty */
+                (The remaining characters can be any combination of letters and digits)
+Step 4: Define error handler yyerror(char *s):
+        Print "Invalid variable\n".
+Step 5: Define main():
+        Prompt user with "Enter variable name: " and call yyparse().
+Step 6: Stop.
+
+
+--------------------------------------------------------------------------------
+8. IMPLEMENTATION OF CALCULATOR USING LEX AND YACC
+Folder: calc/ (calc.l, calc.y)
+
+--- Lexical Analyzer Algorithm (calc.l) ---
+Step 1: Start Lex specification.
+Step 2: Include "y.tab.h" for token definitions and declare 'extern int yylval'.
+Step 3: Rules:
+        a. [0-9]+ -> Convert matched text to integer: yylval = atoi(yytext).
+                     Return token NUM.
+        b. \n     -> Return newline token '\n'.
+        c. .      -> Return the character yytext[0] (for operators '+', '-', '*', '/', 
+                     and parentheses '(', ')').
+Step 4: Define yywrap() returning 1.
+
+--- Parser Algorithm (calc.y) ---
+Step 1: Start YACC specification.
+Step 2: Declare token: NUM.
+Step 3: Specify operator precedence and associativity to eliminate grammar ambiguity:
+        - %left '+' '-'  (lowest precedence, left associative)
+        - %left '*' '/'  (higher precedence, left associative)
+Step 4: Define grammar rules with arithmetic semantic actions:
+        Rule 1: stmt -> expr '\n'
+                Action: Print "Result: %d\n" with value $1 and return 0.
+        Rule 2: expr -> expr '+' expr   Action: $$ = $1 + $3
+                     |  expr '-' expr   Action: $$ = $1 - $3
+                     |  expr '*' expr   Action: $$ = $1 * $3
+                     |  expr '/' expr   Action: $$ = $1 / $3
+                     |  '(' expr ')'    Action: $$ = $2
+                     |  NUM             Action: $$ = $1
+Step 5: Define error handler yyerror(char *s):
+        Print "Error: %s\n" with error string s.
+Step 6: Define main():
+        Prompt user with "Enter expression: " and invoke yyparse().
+Step 7: Stop.
+
+
+--------------------------------------------------------------------------------
+9. CONVERT BNF RULES INTO YACC FORM AND GENERATE ABSTRACT SYNTAX TREE (AST)
+Folder: abs_syn_tree/ (ast.l, ast.y)
+
+--- AST Node Data Structure ---
+Define structure for syntax tree nodes:
+struct node {
+    char label[20];
+    struct node *left;
+    struct node *right;
+};
+
+--- Helper Procedures ---
+Procedure mknode(char *label, node *l, node *r):
+Input: Operator label string, left child pointer l, right child pointer r
+Step 1: Allocate memory for a new node: n = malloc(sizeof(node)).
+Step 2: Copy label into n->label.
+Step 3: Set child pointers: n->left = l, n->right = r.
+Step 4: Return node pointer n.
+
+Procedure mkleaf(int val):
+Input: Integer value
+Step 1: Allocate memory for a leaf node: n = malloc(sizeof(node)).
+Step 2: Format integer val into string and store in n->label.
+Step 3: Set leaf child pointers: n->left = NULL, n->right = NULL.
+Step 4: Return node pointer n.
+
+Procedure print_tree(node *n, int depth):
+Input: Node pointer n, integer depth (indentation level)
+Step 1: If n is NULL, return.
+Step 2: Print 2 * depth spaces for tree indentation.
+Step 3: Print node label n->label followed by a newline.
+Step 4: Recursively call print_tree(n->left, depth + 1).
+Step 5: Recursively call print_tree(n->right, depth + 1).
+Step 6: Return.
+
+--- Lexical Analyzer Algorithm (ast.l) ---
+Step 1: Include "y.tab.h".
+Step 2: Rules:
+        a. [0-9]+                 -> Set yylval.val = atoi(yytext); return NUM.
+        b. [a-zA-Z][a-zA-Z0-9]*   -> Return token ID.
+        c. [ \t]                  -> Ignore spaces and tabs.
+        d. \n                     -> Return newline token '\n'.
+        e. .                      -> Return character yytext[0].
+
+--- Parser Algorithm (ast.y) ---
+Step 1: Declare %union { struct node *nd; int val; } to hold tree pointers and values.
+Step 2: Declare tokens %token <val> NUM ID and non-terminal types %type <nd> expr term factor.
+Step 3: Specify precedence: %left '+' '-' and %left '*' '/'.
+Step 4: Define grammar rules to build the AST bottom-up:
+        Rule 1: stmt -> expr '\n'
+                Action: Set root = $1, call print_tree(root, 0), return 0.
+        Rule 2: expr -> expr '+' term   Action: $$ = mknode("+", $1, $3)
+                     |  expr '-' term   Action: $$ = mknode("-", $1, $3)
+                     |  term            Action: $$ = $1
+        Rule 3: term -> term '*' factor Action: $$ = mknode("*", $1, $3)
+                     |  term '/' factor Action: $$ = mknode("/", $1, $3)
+                     |  factor          Action: $$ = $1
+        Rule 4: factor -> '(' expr ')'  Action: $$ = $2
+                       |  NUM           Action: $$ = mkleaf($1)
+Step 5: Define error routine yyerror(char *s): Print "Error: %s\n".
+Step 6: Define main(): Prompt with "Enter expression: " and invoke yyparse().
+Step 7: Stop.
+
+
+--------------------------------------------------------------------------------
+10. YACC PROGRAM TO CHECK THE SYNTAX OF FOR STATEMENT IN C
+Folder: for_check/ (for_check.l, for_check.y)
+
+--- Lexical Analyzer Algorithm (for_check.l) ---
+Step 1: Start Lex specification.
+Step 2: Include "y.tab.h" to import token definitions.
+Step 3: Define token recognition rules:
+        a. "for"                 -> Return token FOR.
+        b. [a-zA-Z][a-zA-Z0-9]*  -> Return token ID (identifier).
+        c. [0-9]+                -> Return token NUM (number constant).
+        d. Relational operators:
+           - "<=" -> Return token LE.
+           - ">=" -> Return token GE.
+           - "==" -> Return token EQ.
+           - "!=" -> Return token NE.
+        e. Unary operators:
+           - "++" -> Return token INC.
+           - "--" -> Return token DEC.
+        f. [ \t\n]               -> Ignore whitespace, tabs, and newlines.
+        g. .                     -> Return character yytext[0] (for '(', ')', ';', '=', '+', '-').
+Step 4: Define yywrap() returning 1.
+
+--- Parser Algorithm (for_check.y) ---
+Step 1: Start YACC specification.
+Step 2: Declare tokens: FOR, ID, NUM, LE, GE, EQ, NE, INC, DEC.
+Step 3: Define Context-Free Grammar rules for C 'for' loop syntax:
+        Rule 1: stmt -> FOR '(' init ';' cond ';' upd ')'
+                Action: Print "Valid FOR statement\n" and return 0.
+        Rule 2: init -> ID '=' expr
+                (Initialization expression)
+        Rule 3: cond -> expr relop expr
+                (Relational loop test condition)
+        Rule 4: relop -> '<' | '>' | LE | GE | EQ | NE
+                (Supported relational comparison operators)
+        Rule 5: upd  -> ID INC 
+                     |  ID DEC 
+                     |  ID '=' expr
+                (Update expression: post-increment, post-decrement, or assignment)
+        Rule 6: expr -> expr '+' term 
+                     |  expr '-' term 
+                     |  term
+        Rule 7: term -> ID 
+                     |  NUM
+Step 4: Define error handler yyerror(char *s):
+        Print "Invalid FOR statement\n".
+Step 5: Define main():
+        Prompt user with "Enter FOR statement: " and invoke yyparse().
+Step 6: Stop.
+================================================================================
