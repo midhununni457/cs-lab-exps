@@ -40,18 +40,22 @@ File: Enfa_to_nfa.c
 --- Main Algorithm ---
 Step 1: Start.
 Step 2: Read the total number of states 'n'.
-Step 3: Read the n x n epsilon transition matrix 'e'.
-Step 4: Read the n x n transition matrix 't' for the given input symbol.
-Step 5: For each state i from 0 to n - 1:
-        a. Initialize visited array 'vis' of size n with all 0s.
-        b. Call Procedure CLOSURE(i, vis) to find all states reachable from state i 
-           via epsilon transitions.
-        c. For each state j that belongs to epsilon-closure(i) (vis[j] == 1):
-           For each state k from 0 to n - 1:
-             If there is a transition from j to k on the input symbol (t[j][k] == 1):
-                 Set transition c[i][k] = 1 in the new NFA.
-Step 6: Display the resulting transition matrix 'c' of the NFA without epsilon transitions.
-Step 7: Stop.
+Step 3: Read the total number of input symbols 'num_sym'.
+Step 4: Read the n x n epsilon transition matrix 'e', where e[i][j] = 1 indicates
+        an epsilon transition from state i to state j, and 0 otherwise.
+Step 5: For each input symbol s from 0 to num_sym - 1:
+        Read the n x n transition matrix t[s] for symbol s.
+Step 6: For each input symbol s from 0 to num_sym - 1:
+        For each state i from 0 to n - 1:
+          a. Initialize visited array 'vis' of size n with all 0s.
+          b. Call Procedure CLOSURE(i, vis) to find all states reachable from state i 
+             via epsilon transitions.
+          c. For each state j that belongs to epsilon-closure(i) (vis[j] == 1):
+             For each state k from 0 to n - 1:
+               If there is a transition from j to k on symbol s (t[s][j][k] == 1):
+                   Set transition c[s][i][k] = 1 in the new NFA.
+Step 7: Display the resulting transition matrix c[s] for each input symbol s.
+Step 8: Stop.
 
 --- Procedure CLOSURE(s, vis) ---
 (Computes the epsilon closure of state s and stores reachable states in array vis)
@@ -71,20 +75,20 @@ File: nfa_to_dfa.c
 --- Main Algorithm ---
 Step 1: Start.
 Step 2: Read the number of NFA states 'n'.
-Step 3: Read the NFA transition table trans[state][input][next_state] for all states 
-        and input symbols 0 and 1.
-Step 4: Represent each subset of NFA states using an integer bitmask, where bit i is 
+Step 3: Read the number of input symbols 'num_sym'.
+Step 4: Read the NFA transition table trans[state][symbol][next_state] for all states 
+        and all input symbols.
+Step 5: Represent each subset of NFA states using an integer bitmask, where bit i is 
         set to 1 if state qi is present in the subset.
-Step 5: Initialize a FIFO queue to store DFA state subsets, and a 'visited' array of 
-        size 100 with all 0s.
-Step 6: Enqueue the initial DFA state {q0} represented by bitmask 1 (1 << 0):
+Step 6: Initialize a FIFO queue to store DFA state subsets, and a 'visited' array with all 0s.
+Step 7: Enqueue the initial DFA state {q0} represented by bitmask 1 (1 << 0):
         queue[rear++] = 1.
-Step 7: While the queue is not empty (front < rear):
+Step 8: While the queue is not empty (front < rear):
         a. Dequeue current subset: current = queue[front++].
         b. If visited[current] == 1, continue to next iteration.
         c. Mark visited[current] = 1.
         d. Print current subset identifier.
-        e. For each input symbol j (0 and 1):
+        e. For each input symbol j from 0 to num_sym - 1:
            i.   Initialize next subset bitmask: next = 0.
            ii.  For each state i in current subset (if current has bit i set):
                 For each target state k from 0 to n - 1:
@@ -92,7 +96,7 @@ Step 7: While the queue is not empty (front < rear):
            iii. Print transition: current on input j -> next.
            iv.  If state 'next' has not been visited (visited[next] == 0):
                 Enqueue 'next' into the queue (queue[rear++] = next).
-Step 8: Stop.
+Step 9: Stop.
 
 
 --------------------------------------------------------------------------------
@@ -102,23 +106,22 @@ File: dfa_minimize.c
 --- Main Algorithm ---
 Step 1: Start.
 Step 2: Read the total number of states 'n'.
-Step 3: Read the DFA transition table trans[i][0] and trans[i][1] for each state i 
-        on input symbols 0 and 1.
-Step 4: Read the final state status for each state into array 'final' 
+Step 3: Read the total number of input symbols 'num_sym'.
+Step 4: Read the DFA transition table trans[i][k] for each state i and each input symbol k.
+Step 5: Read the final state status for each state into array 'final' 
         (1 for final state, 0 for non-final state).
-Step 5: For each state i from 0 to n - 2:
+Step 6: For each state i from 0 to n - 2:
         For each state j from i + 1 to n - 1:
           Check if state i and state j are 1-equivalent:
           a. Check if both states have the same acceptance status: 
              final[i] == final[j].
-          b. Check if their transitions on input 0 lead to states with the same 
-             acceptance status: final[trans[i][0]] == final[trans[j][0]].
-          c. Check if their transitions on input 1 lead to states with the same 
-             acceptance status: final[trans[i][1]] == final[trans[j][1]].
-          d. If all three conditions are satisfied:
+          b. For each input symbol k from 0 to num_sym - 1:
+             Check if transitions lead to states with identical acceptance status:
+             final[trans[i][k]] == final[trans[j][k]].
+          c. If condition holds for all input symbols:
              Print states qi and qj as equivalent states.
-Step 6: Combine equivalent states into unified states to produce the minimized DFA.
-Step 7: Stop.
+Step 7: Combine equivalent states into unified states to produce the minimized DFA.
+Step 8: Stop.
 
 
 --------------------------------------------------------------------------------

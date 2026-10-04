@@ -1,10 +1,13 @@
 #include <stdio.h>
-#define MAX 10
 
-int n;
-int trans[MAX][2][MAX];
-int visited[100];
-int queue[100];
+#define MAX_STATES 10
+#define MAX_SYMBOLS 10
+#define MAX_SUBSETS 1024
+
+int n, num_sym;
+int trans[MAX_STATES][MAX_SYMBOLS][MAX_STATES];
+int visited[MAX_SUBSETS];
+int queue[MAX_SUBSETS];
 int front = 0, rear = 0;
 
 int main() {
@@ -13,16 +16,19 @@ int main() {
     printf("Enter number of states: ");
     scanf("%d", &n);
 
+    printf("Enter number of input symbols: ");
+    scanf("%d", &num_sym);
+
     printf("Enter transition table:\n");
     for(i = 0; i < n; i++) {
-        for(j = 0; j < 2; j++) {
+        for(j = 0; j < num_sym; j++) {
             printf("State %d, Input %d:\n", i, j);
             for(k = 0; k < n; k++)
                 scanf("%d", &trans[i][j][k]);
         }
     }
 
-    queue[rear++] = 1;      // Start state = {q0}
+    queue[rear++] = 1;      // Start state = {q0} (bit 0 set)
 
     while(front < rear) {
         int current = queue[front++];
@@ -34,7 +40,7 @@ int main() {
 
         printf("\nSubset %d\n", current);
 
-        for(j = 0; j < 2; j++) {
+        for(j = 0; j < num_sym; j++) {
             int next = 0;
 
             for(i = 0; i < n; i++) {
@@ -59,6 +65,7 @@ int main() {
 /*
 Sample Input:
 Enter number of states: 3
+Enter number of input symbols: 2
 Enter transition table:
 State 0, Input 0:
 0 1 0
@@ -85,4 +92,4 @@ Input 1 -> 0
 Subset 4
 Input 0 -> 0
 Input 1 -> 4
-*/
+*/

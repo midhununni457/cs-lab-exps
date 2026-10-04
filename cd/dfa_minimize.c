@@ -1,17 +1,25 @@
 #include <stdio.h>
-#define MAX 20
+
+#define MAX_STATES 20
+#define MAX_SYMBOLS 10
 
 int main() {
-    int n, i, j;
-    int trans[MAX][2];
-    int final[MAX];
+    int n, num_sym, i, j, k;
+    int trans[MAX_STATES][MAX_SYMBOLS];
+    int final[MAX_STATES];
 
     printf("Enter number of states: ");
     scanf("%d", &n);
 
-    printf("Enter transition table (for 0 and 1):\n");
-    for(i = 0; i < n; i++)
-        scanf("%d %d", &trans[i][0], &trans[i][1]);
+    printf("Enter number of input symbols: ");
+    scanf("%d", &num_sym);
+
+    printf("Enter transition table:\n");
+    for(i = 0; i < n; i++) {
+        printf("State %d transitions for %d symbols: ", i, num_sym);
+        for(k = 0; k < num_sym; k++)
+            scanf("%d", &trans[i][k]);
+    }
 
     printf("Enter final states (0 for non-final, 1 for final):\n");
     for(i = 0; i < n; i++)
@@ -21,11 +29,18 @@ int main() {
 
     for(i = 0; i < n; i++) {
         for(j = i + 1; j < n; j++) {
+            if(final[i] != final[j])
+                continue;
 
-            if(final[i] == final[j] &&
-               final[trans[i][0]] == final[trans[j][0]] &&
-               final[trans[i][1]] == final[trans[j][1]]) {
+            int equiv = 1;
+            for(k = 0; k < num_sym; k++) {
+                if(final[trans[i][k]] != final[trans[j][k]]) {
+                    equiv = 0;
+                    break;
+                }
+            }
 
+            if(equiv) {
                 printf("q%d and q%d\n", i, j);
             }
         }
@@ -37,11 +52,12 @@ int main() {
 /*
 Sample Input:
 Enter number of states: 4
-Enter transition table (for 0 and 1):
-1 2
-1 2
-3 3
-3 3
+Enter number of input symbols: 2
+Enter transition table:
+State 0 transitions for 2 symbols: 1 2
+State 1 transitions for 2 symbols: 1 2
+State 2 transitions for 2 symbols: 3 3
+State 3 transitions for 2 symbols: 3 3
 Enter final states (0 for non-final, 1 for final):
 0 0 1 1
 
@@ -49,4 +65,4 @@ Expected Output:
 Equivalent states are:
 q0 and q1
 q2 and q3
-*/
+*/
