@@ -389,4 +389,310 @@ Step 4: Define error handler yyerror(char *s):
 Step 5: Define main():
         Prompt user with "Enter FOR statement: " and invoke yyparse().
 Step 6: Stop.
+
+
+--------------------------------------------------------------------------------
+CYCLE III
+--------------------------------------------------------------------------------
+
+11. COMPUTATION OF FIRST AND FOLLOW SETS OF A CONTEXT-FREE GRAMMAR
+File: first_follow.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read the total number of productions 'n'.
+Step 3: Read each production rule string in the format "LHS=RHS" (using '#' for epsilon).
+        Extract and store all unique LHS non-terminals in array 'nonterms'.
+Step 4: Print "First Sets:".
+Step 5: For each non-terminal A in 'nonterms':
+        a. Initialize a boolean array 'res' of size 128 with all 0s.
+        b. Call Procedure findFirst(A, res).
+        c. Display "First(A) = { " followed by all characters j where res[j] == 1.
+Step 6: Print "Follow Sets:".
+Step 7: For each non-terminal A in 'nonterms':
+        a. Initialize a boolean array 'res' of size 128 with all 0s.
+        b. Call Procedure findFollow(A, res).
+        c. Display "Follow(A) = { " followed by all characters j where res[j] == 1.
+Step 8: Stop.
+
+--- Procedure findFirst(c, res) ---
+Input: Symbol 'c', result array 'res'
+Step 1: If c is a terminal (not an uppercase letter):
+        Set res[(int)c] = 1 and return.
+Step 2: If non-terminal c is already marked as visited on the current recursion path:
+        Return (guards against stack overflow on left-recursive grammars).
+Step 3: Mark c as visited on the current recursion path: visited[c] = 1.
+Step 4: For each production prods[i] where LHS == c:
+        a. If RHS begins with '#' (epsilon):
+           Set res['#'] = 1.
+        b. Else, for each consecutive symbol prods[i][j] in the RHS starting at j = 1:
+           i.   Initialize a temporary array 'temp' with 0s.
+           ii.  Recursively call findFirst(prods[i][j], temp).
+           iii. Add all non-epsilon symbols from 'temp' into 'res': res[k] |= temp[k] for k != '#'.
+           iv.  If 'temp' does not contain epsilon ('#'), break out of the RHS scan.
+           v.   If end of RHS is reached and all symbols derived epsilon, set res['#'] = 1.
+Step 5: Reset visited[c] = 0 (unmark for other alternative search paths).
+Step 6: Return.
+
+--- Procedure findFollow(c, res) ---
+Input: Non-terminal 'c', result array 'res'
+Step 1: If c is not a valid non-terminal or already marked as visited in follow computation:
+        Return.
+Step 2: Mark c as visited: visited[c] = 1.
+Step 3: If c is the start symbol (first non-terminal, index 0):
+        Add end-marker '$' to res: res['$'] = 1.
+Step 4: For each production prods[i]:
+        Scan RHS for occurrences of symbol c at position j:
+        a. While subsequent symbol prods[i][k] exists (where k starts at j + 1):
+           i.   Compute First(prods[i][k], temp).
+           ii.  Add all non-epsilon symbols from 'temp' to 'res'.
+           iii. If 'temp' does not contain epsilon, set has_epsilon = 0 and break.
+           iv.  Increment k.
+        b. If all subsequent symbols derive epsilon (or c is the rightmost symbol) 
+           and LHS != c:
+           Recursively call findFollow(LHS, res).
+Step 5: Return.
+
+
+--------------------------------------------------------------------------------
+12. RECURSIVE DESCENT PARSER FOR AN ARITHMETIC EXPRESSION GRAMMAR
+File: rec_desc_parser.c
+
+Grammar:
+    E  -> T E'
+    E' -> + T E' | - T E' | #
+    T  -> F T'
+    T' -> * F T' | / F T' | #
+    F  -> ( E ) | id
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read the input arithmetic expression string ending with '$'.
+Step 3: Initialize input pointer pos = 0.
+Step 4: Invoke the start symbol procedure E().
+Step 5: Check lookahead symbol:
+        If input[pos] == '$', print "Parsing successful!".
+        Else, print "Parsing failed!".
+Step 6: Stop.
+
+--- Procedures ---
+Procedure match(c):
+    If input[pos] == c, increment pos++.
+    Else, print error with expected symbol and terminate execution.
+
+Procedure E():
+    Print "E -> T E'".
+    Call T().
+    Call EP().
+
+Procedure EP():
+    If lookahead() == '+':
+        Print "E' -> + T E'".
+        match('+').
+        Call T().
+        Call EP().
+    Else if lookahead() == '-':
+        Print "E' -> - T E'".
+        match('-').
+        Call T().
+        Call EP().
+    Else:
+        Print "E' -> #" (epsilon production).
+
+Procedure T():
+    Print "T -> F T'".
+    Call F().
+    Call TP().
+
+Procedure TP():
+    If lookahead() == '*':
+        Print "T' -> * F T'".
+        match('*').
+        Call F().
+        Call TP().
+    Else if lookahead() == '/':
+        Print "T' -> / F T'".
+        match('/').
+        Call F().
+        Call TP().
+    Else:
+        Print "T' -> #" (epsilon production).
+
+Procedure F():
+    If lookahead() == '(':
+        Print "F -> ( E )".
+        match('(').
+        Call E().
+        match(')').
+    Else if lookahead() is alphanumeric:
+        Print matched token label.
+        Advance pos++.
+    Else:
+        Print syntax error and terminate.
+
+
+--------------------------------------------------------------------------------
+13. OPERATOR PRECEDENCE PARSER
+File: op_prec_parser.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Define terminal array: terminals = {'i', '+', '*', '(', ')', '$'}.
+Step 3: Define 6 x 6 operator precedence table matrix with relations:
+        '<' (yields precedence / shift), '>' (takes precedence / reduce),
+        '=' (equal precedence), and ' ' (syntax error).
+Step 4: Read input string ending with '$'.
+Step 5: Push '$' onto the parser stack and initialize input pointer ip = 0.
+Step 6: Display table headers: "Stack", "Input", "Action".
+Step 7: Loop:
+        a. Find the topmost terminal symbol 'a' on stack by scanning downward using 
+           Procedure topTerminal() (ignoring non-terminals like 'E').
+        b. Let 'b' be current lookahead symbol input[ip].
+        c. Print current stack contents and remaining input string.
+        d. If a == '$' and b == '$':
+           Print "Accepted" and terminate loop.
+        e. Look up relation table[idx(a)][idx(b)]:
+           i.   If relation is '<' or '=':
+                - Push incoming symbol 'b' onto stack.
+                - Increment input pointer ip++.
+                - Print "Shift b".
+           ii.  If relation is '>':
+                - Print "Reduce".
+                - If top of stack is identifier 'i': pop 'i'.
+                - Else if top of stack matches parenthesized handle "(E)":
+                  pop ')', 'E', and '('.
+                - Else if top of stack matches binary handle "E op E":
+                  pop right 'E', operator op, and left 'E'.
+                - Push non-terminal 'E' onto stack.
+           iii. If relation is ' ' (empty) or symbol is invalid:
+                - Print "Error" and terminate loop.
+Step 8: Stop.
+
+
+--------------------------------------------------------------------------------
+14. SHIFT REDUCE PARSER FOR A GIVEN GRAMMAR
+File: shift_reduce.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read the total number of grammar rules 'ng'.
+Step 3: Read grammar productions (e.g. E=E+E, E=E*E, E=i).
+Step 4: Read number of input tokens 'ni', followed by token sequence ending with '$'.
+Step 5: Push '$' onto parser stack. Initialize input pointer ip = 0.
+Step 6: Extract the start symbol LHS (e.g. "E") from the first grammar rule.
+Step 7: Display table headers: "Stack", "Input", "Action".
+Step 8: Loop:
+        a. Format and display current stack and remaining input.
+        b. Check Acceptance:
+           If stack has exactly 2 elements ("$" and start symbol) and current 
+           input token is "$":
+               Print "Accepted" and terminate loop.
+        c. Try Reduce:
+           For each grammar production rule g from 0 to ng - 1 (LHS = RHS):
+               Check if top of stack matches RHS:
+               If a match is found:
+                   - Pop RHS length tokens from stack.
+                   - Push LHS non-terminal onto stack.
+                   - Print "Reduce LHS->RHS".
+                   - Set reduced = 1 and break out of production check.
+        d. Try Shift:
+           If no reduction occurred (reduced == 0):
+               - If input pointer is not at end token "$":
+                   Print "Shift input[ip]".
+                   Push input[ip] onto stack.
+                   Increment ip++.
+               - Else:
+                   Print "Error" and terminate loop.
+Step 9: Stop.
+
+
+--------------------------------------------------------------------------------
+15. INTERMEDIATE CODE GENERATION (THREE ADDRESS CODE FOR ARITHMETIC EXPRESSIONS)
+File: icg.c
+
+Grammar:
+    E -> E + T | E - T | T
+    T -> T * F | T / F | F
+    F -> ( E ) | id
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read arithmetic assignment expression string (e.g. "a=b+c*d").
+Step 3: Extract LHS target variable identifier 'id', skip '=' sign, and set pos = 2.
+Step 4: Print "Three Address Code:".
+Step 5: Evaluate expression by calling Procedure E(), returning pointer to final result name.
+Step 6: Print final statement: "id = result".
+Step 7: Stop.
+
+--- Procedures ---
+Procedure newTemp():
+    Format next temporary variable name "t%d" using incrementing counter 'temp'.
+    Return pointer to allocated temporary string.
+
+Procedure F():
+    If lookahead() == '(':
+        Advance pos++ (skip '(').
+        Call E() to evaluate inner expression.
+        Advance pos++ (skip ')').
+        Return inner result pointer.
+    Else:
+        Allocate distinct buffer from results pool.
+        Copy current identifier character into buffer.
+        Advance pos++.
+        Return buffer pointer.
+
+Procedure T():
+    Call F() to parse left-hand factor: left = F().
+    While lookahead() == '*' or lookahead() == '/':
+        Save operator: op = lookahead(), advance pos++.
+        Call F() to parse right-hand factor: right = F().
+        Allocate new temporary: t = newTemp().
+        Print 3AC instruction: "t = left op right".
+        Set left = t.
+    Return left.
+
+Procedure E():
+    Call T() to parse left-hand term: left = T().
+    While lookahead() == '+' or lookahead() == '-':
+        Save operator: op = lookahead(), advance pos++.
+        Call T() to parse right-hand term: right = T().
+        Allocate new temporary: t = newTemp().
+        Print 3AC instruction: "t = left op right".
+        Set left = t.
+    Return left.
+
+
+--------------------------------------------------------------------------------
+16. TARGET CODE GENERATOR (8086 ASSEMBLY CODE GENERATION)
+File: codegen.c
+
+--- Main Algorithm ---
+Step 1: Start.
+Step 2: Read total number of three address code statements 'n'.
+Step 3: Read and store all 'n' three address code statements into a string buffer array 
+        (each line formatted as "result = arg1 op arg2" or assignment "result = arg1").
+Step 4: Print header: "\n8086 Assembly Code:\n".
+Step 5: For each statement i from 0 to n - 1:
+        Parse statement tokens: result, arg1, op, arg2.
+        a. If statement is a simple copy assignment (tokens == 2 or op == "="):
+           Print "MOV result, arg1".
+        b. Else if op == '+':
+           Print "MOV AX, arg1".
+           Print "ADD AX, arg2".
+           Print "MOV result, AX".
+        c. Else if op == '-':
+           Print "MOV AX, arg1".
+           Print "SUB AX, arg2".
+           Print "MOV result, AX".
+        d. Else if op == '*':
+           Print "MOV AX, arg1".
+           Print "MUL arg2".
+           Print "MOV result, AX".
+        e. Else if op == '/':
+           Print "MOV AX, arg1".
+           Print "DIV arg2".
+           Print "MOV result, AX".
+        f. Print empty line separator.
+Step 6: Stop.
 ================================================================================
+
