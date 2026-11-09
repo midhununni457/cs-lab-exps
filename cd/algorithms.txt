@@ -467,68 +467,43 @@ Grammar:
 
 --- Main Algorithm ---
 Step 1: Start.
-Step 2: Read the input arithmetic expression string ending with '$'.
-Step 3: Initialize input pointer pos = 0.
-Step 4: Invoke the start symbol procedure E().
-Step 5: Check lookahead symbol:
-        If input[pos] == '$', print "Parsing successful!".
+Step 2: Read input arithmetic expression ending with '$'.
+Step 3: Set input pointer pos = 0.
+Step 4: Call parsing procedure E().
+Step 5: If current symbol is '$', print "Parsing successful!".
         Else, print "Parsing failed!".
 Step 6: Stop.
 
 --- Procedures ---
-Procedure match(c):
-    If input[pos] == c, increment pos++.
-    Else, print error with expected symbol and terminate execution.
+1. match(symbol):
+   - If current character matches symbol, advance input pointer.
+   - Else, report syntax error and terminate.
 
-Procedure E():
-    Print "E -> T E'".
-    Call T().
-    Call EP().
+2. E():
+   - Call T(), then call EP().
 
-Procedure EP():
-    If lookahead() == '+':
-        Print "E' -> + T E'".
-        match('+').
-        Call T().
-        Call EP().
-    Else if lookahead() == '-':
-        Print "E' -> - T E'".
-        match('-').
-        Call T().
-        Call EP().
-    Else:
-        Print "E' -> #" (epsilon production).
+3. EP():
+   - If lookahead is '+' or '-':
+     Match the operator, call T(), and call EP().
+   - Else:
+     Return (epsilon transition).
 
-Procedure T():
-    Print "T -> F T'".
-    Call F().
-    Call TP().
+4. T():
+   - Call F(), then call TP().
 
-Procedure TP():
-    If lookahead() == '*':
-        Print "T' -> * F T'".
-        match('*').
-        Call F().
-        Call TP().
-    Else if lookahead() == '/':
-        Print "T' -> / F T'".
-        match('/').
-        Call F().
-        Call TP().
-    Else:
-        Print "T' -> #" (epsilon production).
+5. TP():
+   - If lookahead is '*' or '/':
+     Match the operator, call F(), and call TP().
+   - Else:
+     Return (epsilon transition).
 
-Procedure F():
-    If lookahead() == '(':
-        Print "F -> ( E )".
-        match('(').
-        Call E().
-        match(')').
-    Else if lookahead() is alphanumeric:
-        Print matched token label.
-        Advance pos++.
-    Else:
-        Print syntax error and terminate.
+6. F():
+   - If lookahead is '(':
+     Match '(', call E(), and match ')'.
+   - Else if lookahead is an identifier or number:
+     Advance input pointer.
+   - Else:
+     Report syntax error and terminate.
 
 
 --------------------------------------------------------------------------------

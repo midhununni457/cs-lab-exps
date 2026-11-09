@@ -42,8 +42,15 @@ int main() {
             for (int j = 0; j < n; j++)
                 if (vis[j])
                     for (int k = 0; k < n; k++)
-                        if (t[s][j][k])
-                            c[s][i][k] = 1;
+                        if (t[s][j][k]) {
+                            int k_vis = {0};
+                            closure(k, k_vis);
+                            for (int m=0; m<n; m++) {
+                                if (k_vis[m]) {
+                                    c[s][i][m] = 1;
+                                }
+                            }
+                        }
         }
     }
 
