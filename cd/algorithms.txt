@@ -607,6 +607,9 @@ Step 9: Stop.
 
 
 --------------------------------------------------------------------------------
+CYCLE III
+--------------------------------------------------------------------------------
+
 15. INTERMEDIATE CODE GENERATION (THREE ADDRESS CODE FOR ARITHMETIC EXPRESSIONS)
 File: icg.c
 
